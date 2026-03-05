@@ -30,10 +30,11 @@ export default {
   methods: {
     async load() {
       this.loading = true
-      const m = await dashboardMetrics(); this.metrics = m.data
-      const t = await dashboardTrend();
-      this.chart.setOption({tooltip:{},xAxis:{type:'category',data:t.data.map(i=>i.day)},yAxis:{type:'value'},series:[{name:'入库',type:'line',data:t.data.map(i=>i.inboundQty)},{name:'出库',type:'line',data:t.data.map(i=>i.outboundQty)}]})
-      const a = await alertPage({ pageNum: 1, pageSize: 20 }); this.alerts = a.data.list || []
+      try {
+        const m = await dashboardMetrics(); this.metrics = m.data
+        const t = await dashboardTrend();
+        this.chart.setOption({tooltip:{},xAxis:{type:'category',data:t.data.map(i=>i.day)},yAxis:{type:'value'},series:[{name:'入库',type:'line',data:t.data.map(i=>i.inboundQty)},{name:'出库',type:'line',data:t.data.map(i=>i.outboundQty)}]})
+        const a = await alertPage({ pageNum: 1, pageSize: 20 }); this.alerts = a.data.list || []
       } catch (e) { this.error = e.message || "加载失败" } finally { this.loading = false }
     }
   }
