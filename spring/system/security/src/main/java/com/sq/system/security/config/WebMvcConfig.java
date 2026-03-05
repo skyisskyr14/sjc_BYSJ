@@ -100,7 +100,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/uploads/kf/**",
                         "/uploads/**",
 
-                        "/fd/user/register"
+                        "/fd/user/register",
+                        "/sjc/**",
+                        "/ws/**"
                 ); // 白名单接口
 
         //洪水攻击防御策略
@@ -123,7 +125,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/uploads/kf/**",
                         "/uploads/**",
 
-                        "/fd/user/register"
+                        "/fd/user/register",
+                        "/sjc/**",
+                        "/ws/**"
                 );
         //ip获取统计政策
         registry.addInterceptor(ipaccessInterceptor)
@@ -150,7 +154,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/uploads/kf/**",
                         "/uploads/**",
 
-                        "/fd/user/register"
+                        "/fd/user/register",
+                        "/sjc/**",
+                        "/ws/**"
                 );
     }
 
