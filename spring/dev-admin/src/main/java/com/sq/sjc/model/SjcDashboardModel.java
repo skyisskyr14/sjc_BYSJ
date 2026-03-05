@@ -1,5 +1,6 @@
 package com.sq.sjc.model;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sq.sjc.entity.SjcAlertEntity;
 import com.sq.sjc.entity.SjcInventoryEntity;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
+@DS("zxq")
 public class SjcDashboardModel {
     @Resource
     private SjcInventoryRepository inventoryRepository;

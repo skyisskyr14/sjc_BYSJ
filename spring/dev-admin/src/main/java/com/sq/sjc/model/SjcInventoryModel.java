@@ -1,5 +1,6 @@
 package com.sq.sjc.model;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sq.sjc.dto.InventoryChangeDto;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
+@DS("zxq")
 public class SjcInventoryModel {
     @Resource
     private SjcInventoryRepository inventoryRepository;

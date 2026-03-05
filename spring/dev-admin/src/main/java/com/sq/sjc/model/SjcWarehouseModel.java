@@ -1,5 +1,6 @@
 package com.sq.sjc.model;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 
 @Component
+@DS("zxq")
 public class SjcWarehouseModel {
     @Resource
     private SjcWarehouseRepository repository;
