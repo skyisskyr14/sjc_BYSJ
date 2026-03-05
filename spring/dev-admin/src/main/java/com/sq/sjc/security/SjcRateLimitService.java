@@ -1,7 +1,7 @@
 package com.sq.sjc.security;
 
 import com.sq.system.common.exception.BizException;
-import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import java.time.Duration;
 
 @Component
 public class SjcRateLimitService {
-    @Resource(required = false)
+    @Autowired(required = false)
     private StringRedisTemplate redis;
 
     public void check(String key, int limit, int seconds) {
