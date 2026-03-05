@@ -1,0 +1,11 @@
+-- V004：调度任务状态流转日志
+CREATE TABLE IF NOT EXISTS sjc_dispatch_task_log (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  task_id BIGINT NOT NULL,
+  from_status VARCHAR(32) DEFAULT NULL,
+  to_status VARCHAR(32) NOT NULL,
+  op_by BIGINT DEFAULT NULL,
+  remark VARCHAR(255) DEFAULT NULL,
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_task_id (task_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

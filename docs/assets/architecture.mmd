@@ -1,0 +1,11 @@
+flowchart TD
+U[User/Web] --> API[Spring API]
+API --> MYSQL[(MySQL sjc)]
+API --> OUTBOX[(sjc_event_outbox)]
+OUTBOX --> KAFKA[(Kafka topics)]
+KAFKA --> FLINK[Flink Window Job]
+FLINK --> REDIS[(Redis Metrics)]
+FLINK --> CH[(ClickHouse History)]
+REDIS --> API
+API --> WS[WebSocket Push]
+WS --> U

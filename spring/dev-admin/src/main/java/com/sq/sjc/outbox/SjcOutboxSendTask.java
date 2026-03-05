@@ -1,0 +1,46 @@
+package com.sq.sjc.outbox;
+
+import com.baomidou.dynamic.datasource.annotation.DS;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+@Slf4j
+@Component
+@DS("zxq")
+public class SjcOutboxSendTask {
+    @Resource
+    private SjcEventOutboxRepository repository;
+    @Resource
+    private SjcOutboxDispatcher dispatcher;
+
+    @Value("${sjc.outbox.max-retry:10}")
+    private int maxRetry;
+
+    @Scheduled(fixedDelayString = "${sjc.outbox.scan-interval-ms:5000}")
+    public void run() {
+        for (SjcEventOutboxEntity item : repository.scanPending()) {
+            try {
+                dispatcher.dispatch(item);
+                item.setStatus("SENT");
+                item.setSentTime(LocalDateTime.now());
+                item.setErrorMsg(null);
+                log.info("event=outbox_send_success id={} topic={}", item.getId(), item.getTopic());
+            } catch (Exception e) {
+                item.setRetryCount((item.getRetryCount() == null ? 0 : item.getRetryCount()) + 1);
+                if (item.getRetryCount() >= maxRetry) {
+                    item.setStatus("DEAD");
+                }
+                item.setErrorMsg(e.getMessage());
+                item.setNextRetryTime(LocalDateTime.now().plusSeconds(Math.min(60, item.getRetryCount() * 5L)));
+                log.warn("event=outbox_send_failed id={} status={} retry={} err={}", item.getId(), item.getStatus(), item.getRetryCount(), e.getMessage());
+            }
+            item.setUpdateTime(LocalDateTime.now());
+            repository.updateById(item);
+        }
+    }
+}
