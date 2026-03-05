@@ -4,6 +4,7 @@ import com.sq.sjc.model.SjcDashboardModel;
 import com.sq.sjc.ws.SjcRealtimeWebSocket;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,7 +19,7 @@ public class SjcRealtimePullTask {
     private String streamMode;
     @Resource
     private SjcDashboardModel dashboardModel;
-    @Resource(required = false)
+    @Autowired(required = false)
     private StringRedisTemplate redisTemplate;
 
     @Scheduled(fixedDelayString = "${sjc.realtime.pull-interval-ms:5000}")
