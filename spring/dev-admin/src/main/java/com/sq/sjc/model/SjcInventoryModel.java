@@ -24,6 +24,7 @@ import com.sq.sjc.vo.SjcInventoryVo;
 import com.sq.sjc.ws.SjcRealtimeWebSocket;
 import com.sq.system.common.exception.BizException;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @DS("zxq")
 public class SjcInventoryModel {
@@ -138,6 +140,7 @@ public class SjcInventoryModel {
         flow.setRemark(dto.getRemark());
         flow.setCreateTime(LocalDateTime.now());
         flowRepository.insert(flow);
+        log.info("event=inventory_change type={} warehouseId={} materialId={} qty={} before={} after={}", type, dto.getWarehouseId(), dto.getMaterialId(), delta, before, after);
         historyWriter.writeFlow(flow);
         outboxModel.append(SjcTopicNames.INVENTORY_FLOW, JsonUtil.toJson(flow));
 
@@ -160,6 +163,7 @@ public class SjcInventoryModel {
             alert.setAlertMessage("库存低于阈值，请及时补货");
             alert.setCreateTime(LocalDateTime.now());
             alertRepository.insert(alert);
+            log.info("event=alert_created alertType={} warehouseId={} materialId={} trigger={} threshold={}", alert.getAlertType(), alert.getWarehouseId(), alert.getMaterialId(), alert.getTriggerValue(), alert.getThresholdValue());
             outboxModel.append(SjcTopicNames.ALERT_CREATED, JsonUtil.toJson(alert));
             SjcRealtimeWebSocket.broadcast(SjcWsMessageType.ALERT_CREATED, alert);
         }

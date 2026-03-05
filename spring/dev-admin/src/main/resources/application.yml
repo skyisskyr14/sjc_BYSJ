@@ -23,14 +23,14 @@ spring:
       datasource:
         system:
           url: jdbc:mysql://localhost:3306/sq_system?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-          username: root
-          password: rRr1352-
+          username: ${DB_USER:root}
+          password: ${DB_PASS:***}
           driver-class-name: com.mysql.cj.jdbc.Driver
 
         zxq:
           url: jdbc:mysql://localhost:3306/sjc?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-          username: root
-          password: rRr1352-
+          username: ${DB_USER:root}
+          password: ${DB_PASS:***}
           driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
@@ -92,3 +92,7 @@ sjc:
 
   stream:
     mode: REAL
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId}] %logger - %msg%n"

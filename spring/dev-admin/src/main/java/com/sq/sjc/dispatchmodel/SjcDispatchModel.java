@@ -15,6 +15,7 @@ import com.sq.sjc.outbox.SjcEventOutboxModel;
 import com.sq.sjc.ws.SjcRealtimeWebSocket;
 import com.sq.system.common.utils.JsonUtil;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 @DS("zxq")
 public class SjcDispatchModel {
@@ -42,6 +44,7 @@ public class SjcDispatchModel {
         if ("ARRIVED".equals(dto.getToStatus())) task.setProgressPercent(80);
         if ("DONE".equals(dto.getToStatus())) task.setProgressPercent(100);
         taskRepository.updateById(task);
+        log.info("event=dispatch_status_changed taskId={} from={} to={} progress={}", task.getId(), from, dto.getToStatus(), task.getProgressPercent());
 
         SjcDispatchTaskLogEntity log = new SjcDispatchTaskLogEntity();
         log.setTaskId(task.getId()); log.setFromStatus(from); log.setToStatus(dto.getToStatus());
@@ -61,9 +64,15 @@ public class SjcDispatchModel {
         track.setIsDelete(0);
         track.setCreateTime(LocalDateTime.now());
         trackRepository.insert(track);
+        log.info("event=dispatch_track_reported taskId={} lng={} lat={}", track.getTaskId(), track.getLongitude(), track.getLatitude());
 
         outboxModel.append(SjcTopicNames.DISPATCH_TRACK, JsonUtil.toJson(track));
         SjcRealtimeWebSocket.broadcast("DISPATCH_TRACK_APPENDED", track);
+    }
+
+    public void reportTrackBatch(java.util.List<SjcDispatchTrackReportDto> points) {
+        if (points == null || points.isEmpty()) return;
+        for (SjcDispatchTrackReportDto p : points) reportTrack(p);
     }
 
     public Map<String, Object> route(double fromLat, double fromLng, double toLat, double toLng) {
