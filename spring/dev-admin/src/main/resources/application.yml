@@ -81,3 +81,14 @@ security:
   flood:
     expire-time: 60
     max-requests: 60
+
+sjc:
+  simulator:
+    enabled: false
+    interval-ms: 8000
+
+  history:
+    engine: MYSQL
+
+  stream:
+    mode: REAL
