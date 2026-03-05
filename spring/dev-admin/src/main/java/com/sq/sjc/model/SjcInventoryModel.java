@@ -10,11 +10,16 @@ import com.sq.sjc.entity.SjcAlertEntity;
 import com.sq.sjc.entity.SjcInventoryEntity;
 import com.sq.sjc.entity.SjcInventoryFlowEntity;
 import com.sq.sjc.enums.SjcWsMessageType;
+import com.sq.sjc.config.SjcTopicNames;
+import com.sq.sjc.outbox.SjcEventOutboxModel;
+import com.sq.system.common.utils.JsonUtil;
 import com.sq.sjc.repository.SjcAlertRepository;
 import com.sq.sjc.repository.SjcInventoryFlowRepository;
 import com.sq.sjc.repository.SjcInventoryRepository;
 import com.sq.sjc.repository.SjcMaterialRepository;
 import com.sq.sjc.vo.SjcInventoryFlowVo;
+import com.sq.sjc.history.SjcHistoryWriter;
+import com.sq.sjc.security.SjcDataScopeService;
 import com.sq.sjc.vo.SjcInventoryVo;
 import com.sq.sjc.ws.SjcRealtimeWebSocket;
 import com.sq.system.common.exception.BizException;
@@ -43,6 +48,12 @@ public class SjcInventoryModel {
     private SjcAlertRepository alertRepository;
     @Resource
     private SjcDashboardModel dashboardModel;
+    @Resource
+    private SjcEventOutboxModel outboxModel;
+    @Resource
+    private SjcHistoryWriter historyWriter;
+    @Resource
+    private SjcDataScopeService dataScopeService;
 
     public com.sq.system.common.result.PageResult<SjcInventoryVo> page(InventoryPageQueryDto dto) {
         List<SjcInventoryVo> rows = inventoryRepository.listAllWithJoin().stream().filter(v ->
@@ -82,6 +93,7 @@ public class SjcInventoryModel {
     }
 
     private void changeStock(InventoryChangeDto dto, String type) {
+        dataScopeService.checkWarehouseScope(dto.getWarehouseId());
         SjcInventoryEntity inventory = inventoryRepository.getOne(dto.getWarehouseId(), dto.getMaterialId());
         if (inventory == null) {
             inventory = new SjcInventoryEntity();
@@ -126,6 +138,8 @@ public class SjcInventoryModel {
         flow.setRemark(dto.getRemark());
         flow.setCreateTime(LocalDateTime.now());
         flowRepository.insert(flow);
+        historyWriter.writeFlow(flow);
+        outboxModel.append(SjcTopicNames.INVENTORY_FLOW, JsonUtil.toJson(flow));
 
         checkAndCreateLowStockAlert(inventory);
         SjcRealtimeWebSocket.broadcast(SjcWsMessageType.INVENTORY_METRICS_UPDATED, dashboardModel.metrics());
@@ -146,6 +160,7 @@ public class SjcInventoryModel {
             alert.setAlertMessage("库存低于阈值，请及时补货");
             alert.setCreateTime(LocalDateTime.now());
             alertRepository.insert(alert);
+            outboxModel.append(SjcTopicNames.ALERT_CREATED, JsonUtil.toJson(alert));
             SjcRealtimeWebSocket.broadcast(SjcWsMessageType.ALERT_CREATED, alert);
         }
     }

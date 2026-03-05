@@ -84,5 +84,11 @@ security:
 
 sjc:
   simulator:
-    enabled: true
+    enabled: false
     interval-ms: 8000
+
+  history:
+    engine: MYSQL
+
+  stream:
+    mode: REAL

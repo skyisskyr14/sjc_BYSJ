@@ -1,0 +1,17 @@
+-- V003：outbox事件表（执行顺序：V001 -> V002 -> V003）
+CREATE TABLE IF NOT EXISTS sjc_event_outbox (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  event_key VARCHAR(128) NOT NULL,
+  topic VARCHAR(128) NOT NULL,
+  payload JSON NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  retry_count INT NOT NULL DEFAULT 0,
+  next_retry_time DATETIME DEFAULT NULL,
+  sent_time DATETIME DEFAULT NULL,
+  error_msg VARCHAR(500) DEFAULT NULL,
+  is_delete TINYINT NOT NULL DEFAULT 0,
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_event_key (event_key),
+  KEY idx_status_retry (status, next_retry_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

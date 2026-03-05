@@ -16,8 +16,10 @@ import java.util.Random;
 @Slf4j
 @Component
 public class SjcSimulatorTask {
-    @Value("${sjc.simulator.enabled:true}")
+    @Value("${sjc.simulator.enabled:false}")
     private boolean enabled;
+    @Value("${sjc.stream.mode:REAL}")
+    private String streamMode;
     @Resource
     private SjcInventoryRepository inventoryRepository;
     @Resource
@@ -26,7 +28,7 @@ public class SjcSimulatorTask {
 
     @Scheduled(fixedDelayString = "${sjc.simulator.interval-ms:8000}")
     public void run() {
-        if (!enabled) return;
+        if (!enabled || "REAL".equalsIgnoreCase(streamMode)) return;
         var list = inventoryRepository.selectList(null);
         if (list.isEmpty()) return;
         var pick = list.get(random.nextInt(list.size()));

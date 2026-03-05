@@ -1,18 +1,36 @@
 package com.sq.sjc.controller;
 
+import com.sq.sjc.dispatchdto.SjcDispatchStatusDto;
+import com.sq.sjc.dispatchdto.SjcDispatchTrackReportDto;
+import com.sq.sjc.dispatchmodel.SjcDispatchModel;
+import com.sq.system.common.annotation.AdminLog;
 import com.sq.system.common.result.ResponseResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/sjc/task")
+@RequestMapping("/sjc/dispatch")
 public class SjcDispatchController {
-    @GetMapping("/list")
-    public ResponseResult<?> list() {
-        return ResponseResult.success(List.of(Map.of("taskNo", "TASK-DEMO-001", "status", "PENDING", "demandPoint", "临时安置点A")));
+    @Resource
+    private SjcDispatchModel model;
+
+    @GetMapping("/task/list")
+    public ResponseResult<?> list() { return ResponseResult.success(model.list()); }
+
+    @PostMapping("/task/status")
+    @AdminLog(action = "调度任务状态变更", module = "sjc")
+    public ResponseResult<?> updateStatus(@RequestBody SjcDispatchStatusDto dto) {
+        model.updateStatus(dto); return ResponseResult.success();
+    }
+
+    @GetMapping("/route")
+    public ResponseResult<?> route(@RequestParam double fromLat,@RequestParam double fromLng,@RequestParam double toLat,@RequestParam double toLng) {
+        return ResponseResult.success(model.route(fromLat, fromLng, toLat, toLng));
+    }
+
+    @PostMapping("/track/report")
+    @AdminLog(action = "调度轨迹上报", module = "sjc")
+    public ResponseResult<?> report(@RequestBody SjcDispatchTrackReportDto dto) {
+        model.reportTrack(dto); return ResponseResult.success();
     }
 }
