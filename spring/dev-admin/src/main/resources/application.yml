@@ -81,3 +81,8 @@ security:
   flood:
     expire-time: 60
     max-requests: 60
+
+sjc:
+  simulator:
+    enabled: true
+    interval-ms: 8000
