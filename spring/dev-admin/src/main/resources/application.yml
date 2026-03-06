@@ -25,12 +25,16 @@ spring:
           url: jdbc:mysql://localhost:3306/sq_system?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
           username: ${DB_USER:root}
           password: ${DB_PASS:***}
+          # DB_USER / DB_PASS 来自环境变量；未设置时会使用冒号后的默认值
+          # 本地若报 Access denied，请按 docs/01_本地启动.md 设置 DB_PASS
           driver-class-name: com.mysql.cj.jdbc.Driver
 
         zxq:
           url: jdbc:mysql://localhost:3306/sjc?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
           username: ${DB_USER:root}
           password: ${DB_PASS:***}
+          # DB_USER / DB_PASS 来自环境变量；未设置时会使用冒号后的默认值
+          # 本地若报 Access denied，请按 docs/01_本地启动.md 设置 DB_PASS
           driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:

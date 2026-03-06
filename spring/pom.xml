@@ -23,6 +23,7 @@
         <module>system/user-core</module>
         <module>system/ws</module>
         <module>dev-admin</module>
+        <module>project</module>
 
     </modules>
 

@@ -1,3 +1,6 @@
+-- 注意：本文件是 ClickHouse DDL，不可在 MySQL 客户端执行。
+-- 建议在 ClickHouse 中执行：clickhouse-client --multiquery < db/ch/V001__inventory_history.sql
+
 CREATE TABLE IF NOT EXISTS sjc_inventory_flow_history (
   event_time DateTime,
   warehouse_id UInt64,
