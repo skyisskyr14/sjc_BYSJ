@@ -10,12 +10,30 @@
       </el-menu>
     </el-aside>
     <el-container>
-      <el-header class="header">基于Flink的常规应急物资管理系统（MVP）</el-header>
+      <el-header class="header">
+        <span>基于Flink的常规应急物资管理系统（MVP）</span>
+        <el-button type="text" @click="logout">退出登录</el-button>
+      </el-header>
       <el-main><router-view /></el-main>
     </el-container>
   </el-container>
 </template>
+
+<script>
+import { logoutByUser } from '@/api/auth'
+
+export default {
+  methods: {
+    async logout() {
+      await logoutByUser()
+      this.$message.success('已退出')
+      this.$router.replace('/login')
+    }
+  }
+}
+</script>
+
 <style scoped>
 .aside{background:#0b1f3a;color:#fff;padding:12px}
-.header{background:#fff;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.header{background:#fff;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between}
 </style>

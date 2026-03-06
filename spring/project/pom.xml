@@ -12,9 +12,14 @@
 
     <artifactId>project</artifactId>
     <packaging>pom</packaging>
-
     <modules>
-
+        <module>sjc-auth-app</module>
+        <module>sjc-inventory-app</module>
+        <module>sjc-alert-app</module>
+        <module>sjc-dispatch-app</module>
+        <module>sjc-dashboard-app</module>
+        <module>sjc-outbox-app</module>
+        <module>sjc-runtime-app</module>
     </modules>
 
     <properties>
