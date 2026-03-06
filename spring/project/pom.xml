@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <modules>
-
+        <module>sjc-auth-app</module>
     </modules>
 
     <properties>
