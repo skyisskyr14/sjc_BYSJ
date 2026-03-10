@@ -1,0 +1,7 @@
+com\sq\sjcproject\auth\repository\SjcUserRoleRepository.class
+com\sq\sjcproject\auth\entity\SjcUserRoleEntity.class
+com\sq\sjcproject\auth\entity\SjcRoleEntity.class
+com\sq\sjcproject\auth\model\SjcAuthRegisterModel.class
+com\sq\sjcproject\auth\repository\SjcRoleRepository.class
+com\sq\sjcproject\auth\controller\SjcAuthController.class
+com\sq\sjcproject\auth\dto\SjcRegisterDto.class

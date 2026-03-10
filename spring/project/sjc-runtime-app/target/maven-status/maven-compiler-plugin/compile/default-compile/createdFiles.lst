@@ -1,0 +1,4 @@
+com\sq\sjc\task\SjcSimulatorTask.class
+com\sq\sjc\config\SjcGlobalExceptionHandler.class
+com\sq\sjc\config\SjcTraceIdFilter.class
+com\sq\sjc\task\SjcRealtimePullTask.class

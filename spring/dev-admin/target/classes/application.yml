@@ -1,0 +1,103 @@
+server:
+  servlet:
+    context-path: /api
+  port: 10438
+
+#debug: true
+
+spring:
+  autoconfigure:
+    exclude:
+      - com.baomidou.mybatisplus.autoconfigure.DdlAutoConfiguration
+  servlet:
+    multipart:
+      max-file-size: 100MB     # 单个文件最大
+      max-request-size: 100MB  # 单次请求最大
+  jmx:
+    enabled: false
+  application:
+    name: dev-admin
+  datasource:
+    dynamic:
+      primary: system
+      datasource:
+        system:
+          url: jdbc:mysql://localhost:3306/sq_system?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+          username: root
+          password: rRr1352-
+          # DB_USER / DB_PASS 来自环境变量；未设置时会使用冒号后的默认值
+          # 本地若报 Access denied，请按 docs/01_本地启动.md 设置 DB_PASS
+          driver-class-name: com.mysql.cj.jdbc.Driver
+
+        zxq:
+          url: jdbc:mysql://localhost:3306/sjc?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+          username: root
+          password: rRr1352-
+          # DB_USER / DB_PASS 来自环境变量；未设置时会使用冒号后的默认值
+          # 本地若报 Access denied，请按 docs/01_本地启动.md 设置 DB_PASS
+          driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+app:
+  recharge:
+    # 正确写法：用 ${user.dir}，不要用 #{systemProperties[...] }
+    base-dir: "${user.dir}/data/recharge"
+    public-host: "http://localhost:10438/api/uploads/recharge"
+  kf:
+    base-dir: "${user.dir}/data/kf"
+    public-host: "http://localhost:10438/api/uploads/kf"
+  pay:
+    base-dir: "${user.dir}/data/pay"
+    public-host: "http://localhost:10438/api/uploads/pay"
+  user:
+    avatar:
+      base-dir: "${user.dir}/data/user/avatar"
+      public-host: "http://localhost:10438/api/uploads/user/avatar"
+  shop:
+    avatar:
+      base-dir: "${user.dir}/data/shop/avatar"
+      public-host: "http://localhost:10438/api/uploads/shop/avatar"
+    store-image:
+      base-dir: "${user.dir}/data/shop/store"
+      public-host: "http://localhost:10438/api/uploads/shop/store"
+
+
+security:
+  ip-access:
+    allow-unknown-ip: true
+    allow-list-key: ip:allowlist
+    block-list-key: ip:blacklist
+  flood:
+    expire-time: 60
+    max-requests: 60
+
+sjc:
+  simulator:
+    enabled: false
+    interval-ms: 8000
+
+  history:
+    engine: MYSQL
+
+  stream:
+    # mode: REAL
+    mode: MOCK
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId}] %logger - %msg%n"

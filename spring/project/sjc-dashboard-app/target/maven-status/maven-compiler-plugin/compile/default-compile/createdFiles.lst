@@ -1,0 +1,12 @@
+com\sq\sjc\entity\SjcInventoryEntity.class
+com\sq\sjc\repository\SjcAlertRepository.class
+com\sq\sjc\vo\SjcDashboardMetricsVo.class
+com\sq\sjc\repository\SjcInventoryFlowRepository.class
+com\sq\sjc\entity\SjcInventoryFlowEntity.class
+com\sq\sjc\vo\SjcInventoryFlowVo.class
+com\sq\sjc\repository\SjcInventoryRepository.class
+com\sq\sjc\controller\SjcDashboardController.class
+com\sq\sjc\entity\SjcAlertEntity.class
+com\sq\sjc\vo\SjcInventoryVo.class
+com\sq\sjc\model\SjcDashboardModel.class
+com\sq\sjc\vo\SjcTrendPointVo.class

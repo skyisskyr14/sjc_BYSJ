@@ -1,0 +1,156 @@
+package com.sq.system.security.config;
+
+import com.sq.system.security.interceptor.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.nio.file.Paths;
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    @Resource
+    private TokenInterceptor tokenInterceptor;
+    @Resource
+    private SjcRoleInterceptor sjcRoleInterceptor;
+
+    @Bean
+    public PermissionInterceptor permissionInterceptor() {
+        return new PermissionInterceptor();
+    }
+
+    @Resource
+    private FloodInterceptor floodInterceptor;
+
+    @Resource
+    private IpAccessInterceptor ipaccessInterceptor;
+
+    @Resource
+    private ProjectContextInterceptor projectContextInterceptor;
+
+    @Resource
+    private MaintenanceTimeInterceptor maintenanceTimeInterceptor;
+
+    @Value("${app.kf.base-dir}")
+    private String baseDir;
+    @Value("${app.recharge.base-dir}")
+    private String baseDir1;
+    @Value("${app.pay.base-dir}")
+    private String baseDir2;
+    @Value("${app.user.avatar.base-dir}")
+    private String baseDir3;
+    @Value("${app.shop.avatar.base-dir}")
+    private String baseDir4;
+    @Value("${app.shop.store-image.base-dir}")
+    private String baseDir5;
+
+    @PostConstruct
+    public void debugStaticDirs() {
+        System.out.println("==== [DEBUG] Static Resource Roots ====");
+        System.out.println("kf.baseDir      = " + baseDir);
+        System.out.println("recharge.baseDir= " + baseDir1);
+        System.out.println("pay.baseDir2    = " + baseDir2);
+        System.out.println("pay.location2   = " + Paths.get(baseDir2).toUri());
+        System.out.println("user.avatarDir  = " + baseDir3);
+        System.out.println("shop.avatarDir  = " + baseDir4);
+        System.out.println("shop.storeDir   = " + baseDir5);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String location = toDirLocation(baseDir);
+        registry.addResourceHandler("/uploads/kf/**").addResourceLocations(location);
+        String location1 = toDirLocation(baseDir1);
+        registry.addResourceHandler("/uploads/recharge/**").addResourceLocations(location1);
+        String location2 = toDirLocation(baseDir2);
+        registry.addResourceHandler("/uploads/pay/**").addResourceLocations(location2);
+        String location3 = toDirLocation(baseDir3);
+        registry.addResourceHandler("/uploads/user/avatar/**").addResourceLocations(location3);
+        String location4 = toDirLocation(baseDir4);
+        registry.addResourceHandler("/uploads/shop/avatar/**").addResourceLocations(location4);
+        String location5 = toDirLocation(baseDir5);
+        registry.addResourceHandler("/uploads/shop/store/**").addResourceLocations(location5);
+    }
+
+    private String toDirLocation(String dir) {
+        String location = Paths.get(dir).toUri().toString();
+        return location.endsWith("/") ? location : location + "/";
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(maintenanceTimeInterceptor)
+                .addPathPatterns("/**");
+
+        registry.addInterceptor(tokenInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/auth/captcha",
+                        "/auth/admin/login",
+                        "/auth/user/login",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/uploads/kf/**",
+                        "/uploads/**",
+                        "/sjc/auth/register",
+                        "/ws/**"
+                );
+
+        registry.addInterceptor(sjcRoleInterceptor)
+                .addPathPatterns("/sjc/**")
+                .excludePathPatterns("/sjc/auth/register");
+
+        registry.addInterceptor(floodInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                );
+
+        registry.addInterceptor(permissionInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/auth/captcha",
+                        "/auth/admin/login",
+                        "/auth/user/login",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/uploads/kf/**",
+                        "/uploads/**",
+                        "/fd/user/register",
+                        "/sjc/**",
+                        "/ws/**"
+                );
+
+        registry.addInterceptor(ipaccessInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/uploads/kf/**",
+                        "/uploads/**"
+                );
+
+        registry.addInterceptor(projectContextInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/auth/captcha",
+                        "/auth/admin/login",
+                        "/auth/user/login",
+                        "/auth/user/register",
+                        "/auth/user/auth-token",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/uploads/kf/**",
+                        "/uploads/**",
+                        "/sjc/auth/register",
+                        "/sjc/**",
+                        "/ws/**"
+                );
+    }
+}

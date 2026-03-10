@@ -1,0 +1,7 @@
+sjc:
+  stream:
+    mode: REAL
+  simulator:
+    enabled: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
